@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>meilcli</groupId>
+  <artifactId>jphol</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20151130.090940</timestamp>
+      <buildNumber>2</buildNumber>
+    </snapshot>
+    <lastUpdated>20151130090940</lastUpdated>
+  </versioning>
+</metadata>

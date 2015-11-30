@@ -1,5 +1,14 @@
-.gradle
+# Java class files
+*.class
+
+# Gradle files
+.gradle/
 build/
+/*/build/
+
+# Generated files
+bin/
+gen/
 
 # Ignore Gradle GUI config
 gradle-app.setting

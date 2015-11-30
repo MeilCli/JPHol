@@ -13,6 +13,13 @@ Kotlinで書いた
 	}
 
 
+#### Java
+	HolidayManager manager = new HolidayManager();
+    boolean isHoliday = manager.isHoliday(new GregorianCalendar());
+
+Javaだとたぶんこんな感じで呼び出せる
+
+
 ライセンス
 ----------
 

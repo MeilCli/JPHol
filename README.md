@@ -9,7 +9,7 @@ Kotlinで書いた
 	}
 	
 	dependencies {
-		compile 'meilcli:jphol:1.0-SNAPSHOT'
+		compile 'meilcli:jphol:1.0'
 	}
 
 

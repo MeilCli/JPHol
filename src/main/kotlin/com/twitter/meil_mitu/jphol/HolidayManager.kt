@@ -1,32 +1,33 @@
 package com.twitter.meil_mitu.jphol
 
 import java.util.*
+import com.twitter.meil_mitu.klinq.*
 
 class HolidayManager {
     internal object Data {
-        val month1 : Int = Calendar.JANUARY
-        val month2 : Int = Calendar.FEBRUARY
-        val month3 : Int = Calendar.MARCH
-        val month4 : Int = Calendar.APRIL
-        val month5 : Int = Calendar.MAY
-        val month6 : Int = Calendar.JUNE
-        val month7 : Int = Calendar.JULY
-        val month8 : Int = Calendar.AUGUST
-        val month9 : Int = Calendar.SEPTEMBER
-        val month10 : Int = Calendar.OCTOBER
-        val month11 : Int = Calendar.NOVEMBER
-        val month12 : Int = Calendar.DECEMBER
-        val dayOfWeek1:Int = Calendar.SUNDAY
-        val dayOfWeek2:Int=Calendar.MONDAY
+        val month1: Int = Calendar.JANUARY
+        val month2: Int = Calendar.FEBRUARY
+        val month3: Int = Calendar.MARCH
+        val month4: Int = Calendar.APRIL
+        val month5: Int = Calendar.MAY
+        val month6: Int = Calendar.JUNE
+        val month7: Int = Calendar.JULY
+        val month8: Int = Calendar.AUGUST
+        val month9: Int = Calendar.SEPTEMBER
+        val month10: Int = Calendar.OCTOBER
+        val month11: Int = Calendar.NOVEMBER
+        val month12: Int = Calendar.DECEMBER
+        val dayOfWeek1: Int = Calendar.SUNDAY
+        val dayOfWeek2: Int = Calendar.MONDAY
         val holidays2015: List<IHoliday> = maketHolidays(2015)
         val holidays2016: List<IHoliday> = maketHolidays(2016)
 
-        fun getHolidayList(year:Int):List<IHoliday>{
-            if(year<2016)return holidays2015
+        fun getHolidayList(year: Int): List<IHoliday> {
+            if (year < 2016) return holidays2015
             return holidays2016
         }
 
-        private fun maketHolidays(year:Int): List<IHoliday> {
+        private fun maketHolidays(year: Int): List<IHoliday> {
             var list = ArrayList<IHoliday>()
             run {
                 //http://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html
@@ -56,78 +57,79 @@ class HolidayManager {
                 list.add(DayOfMonthHoliday("勤労感謝の日", HolidayType.NationalHoliday, month11, 23))
                 list.add(DayOfMonthHoliday("天皇誕生日", HolidayType.NationalHoliday, month12, 23))
             }
-            run{
+            run {
                 //https://ja.wikipedia.org/wiki/%E4%BC%91%E6%97%A5
-                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday,month1,1))
-                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday,month1,2))
-                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday,month1,3))
-                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday,month12,29))
-                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday,month12,30))
-                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday,month12,31))
+                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday, month1, 1))
+                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday, month1, 2))
+                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday, month1, 3))
+                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday, month12, 29))
+                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday, month12, 30))
+                list.add(DayOfMonthHoliday("公共団体の休日", HolidayType.Holiday, month12, 31))
             }
             return list
         }
     }
 
-    fun isHoliday(year:Int,monthInHuman:Int,day:Int):Boolean{
+    fun isHoliday(year: Int, monthInHuman: Int, day: Int): Boolean {
         var c = GregorianCalendar().apply {
-            set(year,monthInHuman-1,day)
+            set(year, monthInHuman - 1, day)
         }
         return isHoliday(c)
     }
 
-    fun isHoliday(c:Calendar):Boolean{
-        return getHoliday(c)!=null
+    fun isHoliday(c: Calendar): Boolean {
+        return getHoliday(c) != null
     }
 
-    fun getHoliday(year:Int,monthInHuman:Int,day:Int):List<IHoliday>?{
+    fun getHoliday(year: Int, monthInHuman: Int, day: Int): List<IHoliday>? {
         var c = GregorianCalendar().apply {
-            set(year,monthInHuman-1,day)
+            set(year, monthInHuman - 1, day)
         }
         return getHoliday(c)
     }
 
-    fun getHoliday(c:Calendar):List<IHoliday>?{
-        val year :Int=c.get(Calendar.YEAR)
-        val list :List<IHoliday> = Data.getHolidayList(year)
-        run{
-            var r = getHoliday(c,list)
-            if(isMakeUpHoliday(c,list,r))r.plus(Holiday("振替休日", HolidayType.MakeUpHoliday))
-            if(r.size>0)return r
+    fun getHoliday(c: Calendar): List<IHoliday>? {
+        val year: Int = c.get(Calendar.YEAR)
+        val list: List<IHoliday> = Data.getHolidayList(year)
+        run {
+            var r = getHoliday(c, list)
+            if (isMakeUpHoliday(c, list, r)) r.plus(Holiday("振替休日", HolidayType.MakeUpHoliday))
+            if (r.size > 0) return r
         }
-        run{
+        run {
             //国民の祝日に挟まれていたら休日
-            var c1 = (c.clone() as Calendar).apply{add(Calendar.DAY_OF_YEAR,1)}
-            var c2 = (c.clone() as Calendar).apply{add(Calendar.DAY_OF_YEAR,-1)}
-            if(list.any { x->x.Type== HolidayType.NationalHoliday&&x.matchDay(c1) }&&list.any { x->x.Type== HolidayType.NationalHoliday&&x.matchDay(c2) }){
+            var c1 = (c.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, 1) }
+            var c2 = (c.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, -1) }
+            if (list.any { x -> x.Type == HolidayType.NationalHoliday && x.matchDay(c1) }
+                    && list.any { x -> x.Type == HolidayType.NationalHoliday && x.matchDay(c2) }) {
                 return arrayListOf(Holiday("国民の休日", HolidayType.Holiday))
             }
         }
-        if(isMakeUpHoliday(c,list,null))return arrayListOf(Holiday("振替休日", HolidayType.MakeUpHoliday))
+        if (isMakeUpHoliday(c, list, null)) return arrayListOf(Holiday("振替休日", HolidayType.MakeUpHoliday))
         return null
     }
 
-    private fun isMakeUpHoliday(c:Calendar,list:List<IHoliday>,holiday:List<IHoliday>?):Boolean{
-        if(holiday?.any { x->x.Type== HolidayType.NationalHoliday } ?: false)return false
-        if(isSunday(c))return false
+    private fun isMakeUpHoliday(c: Calendar, list: List<IHoliday>, holiday: List<IHoliday>?): Boolean {
+        if (holiday?.any { x -> x.Type == HolidayType.NationalHoliday } ?: false) return false
+        if (isSunday(c)) return false
         var c1 = c.clone() as Calendar
-        for(i in 2..c1.get(Calendar.DAY_OF_WEEK)){
+        for (i in 2..c1.get(Calendar.DAY_OF_WEEK)) {
             c1.add(Calendar.DAY_OF_YEAR, -1)
-            if(getHoliday(c1,list).all { x->x.Type!= HolidayType.NationalHoliday})return false
+            if (getHoliday(c1, list).all { x -> x.Type != HolidayType.NationalHoliday }) return false
         }
         return true
     }
 
-    fun isSunday(c:Calendar):Boolean{
-        return c.get(Calendar.DAY_OF_WEEK)==Data.dayOfWeek1
+    fun isSunday(c: Calendar): Boolean {
+        return c.get(Calendar.DAY_OF_WEEK) == Data.dayOfWeek1
     }
 
-    private fun isHoliday(c:Calendar,list:List<IHoliday>):Boolean{
-        return getHoliday(c,list).size>0
+    private fun isHoliday(c: Calendar, list: List<IHoliday>): Boolean {
+        return getHoliday(c, list).size > 0
     }
 
-    private fun getHoliday(c:Calendar,list:List<IHoliday>):List<IHoliday>{
-        return list.filter { x->x.matchDay(c) }
+    private fun getHoliday(c: Calendar, list: List<IHoliday>): List<IHoliday> {
+        return list.toEnumerable().where { x -> x.matchDay(c) }.toList()
     }
 
 }

@@ -12,7 +12,9 @@ class HolidayManagerTest {
     }
 
     private fun isNationalHoliday(year:Int,month:Int,day:Int,condition:Boolean){
-        assertEquals(manager.getHoliday(year,month,day)?.any{x->x.Type== HolidayType.NationalHoliday}?:false,condition)
+        assertEquals(
+                manager.getHoliday(year,month,day)?.any{x->x.Type== HolidayType.NationalHoliday}?:false,
+                condition)
     }
 
     //元旦
